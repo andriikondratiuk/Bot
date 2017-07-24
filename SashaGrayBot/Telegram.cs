@@ -11,6 +11,8 @@ namespace SashaGrayBot
 {
     class TelegramBot
     {
+        private readonly string baseAdress;
+        private readonly string port;
         private readonly string botToken;
         private readonly string jenkinsUserName;
         private readonly string jenkinsUserToken;
@@ -18,6 +20,8 @@ namespace SashaGrayBot
 
         public TelegramBot()
         {
+            baseAdress = BotSettings.Default["Host"].ToString();
+            port = BotSettings.Default["Port"].ToString();
             botToken = BotSettings.Default["BotToken"].ToString();
             jenkinsUserName = BotSettings.Default["UserName"].ToString();
             jenkinsUserToken = BotSettings.Default["PasswordToken"].ToString();    
@@ -48,10 +52,10 @@ namespace SashaGrayBot
                     {                        
                             using (var host = new HttpClient())
                             {
-                                var credentials = Encoding.ASCII.GetBytes("Sasha:91fd1607341d5a5b723519b218023ad3");
+                                var credentials = Encoding.ASCII.GetBytes($"{jenkinsUserName}:{jenkinsUserToken}");
                                 host.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(credentials));
                                 host.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36");                          
-                                var result = await host.GetAsync(@"http://192.168.104.144:8080/job/first/build?token=someAuthorizationFuckingTocketThatICantFindWhereToGenerate");
+                                var result = await host.GetAsync($"http://{baseAdress}:{port}/job/first/build?token=someAuthorizationFuckingTocketThatICantFindWhereToGenerate");
                                 await client.AnswerCallbackQueryAsync(ev.CallbackQuery.Id, "Ok", true);
                             }
                     }

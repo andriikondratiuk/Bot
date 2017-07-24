@@ -25,7 +25,7 @@ namespace SashaGrayBot {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("Sasha")]
+        [global::System.Configuration.DefaultSettingValueAttribute("name")]
         public string UserName {
             get {
                 return ((string)(this["UserName"]));
@@ -37,7 +37,7 @@ namespace SashaGrayBot {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("91fd1607341d5a5b723519b218023ad3")]
+        [global::System.Configuration.DefaultSettingValueAttribute("token")]
         public string PasswordToken {
             get {
                 return ((string)(this["PasswordToken"]));
@@ -49,13 +49,37 @@ namespace SashaGrayBot {
         
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
-        [global::System.Configuration.DefaultSettingValueAttribute("333253994:AAGQ21RKbwNLPWUGXlSamzKAEEpGUOZUldY")]
+        [global::System.Configuration.DefaultSettingValueAttribute("bot:token")]
         public string BotToken {
             get {
                 return ((string)(this["BotToken"]));
             }
             set {
                 this["BotToken"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("localhost")]
+        public string Host {
+            get {
+                return ((string)(this["Host"]));
+            }
+            set {
+                this["Host"] = value;
+            }
+        }
+        
+        [global::System.Configuration.UserScopedSettingAttribute()]
+        [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
+        [global::System.Configuration.DefaultSettingValueAttribute("8080")]
+        public string Poprt {
+            get {
+                return ((string)(this["Poprt"]));
+            }
+            set {
+                this["Poprt"] = value;
             }
         }
     }
