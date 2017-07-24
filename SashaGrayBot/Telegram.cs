@@ -3,17 +3,24 @@ using System.Collections.Generic;
 using System.ComponentModel;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
+using System.Text;
 using Telegram.Bot;
 
 namespace SashaGrayBot
 {
     class TelegramBot
     {
-        private readonly static string token = "";
+        private readonly string botToken;
+        private readonly string jenkinsUserName;
+        private readonly string jenkinsUserToken;
         private BackgroundWorker bw;
 
         public TelegramBot()
-        {           
+        {
+            botToken = BotSettings.Default["BotToken"].ToString();
+            jenkinsUserName = BotSettings.Default["UserName"].ToString();
+            jenkinsUserToken = BotSettings.Default["PasswordToken"].ToString();    
             bw = new BackgroundWorker();
             bw.DoWork += bw_DoWork;
         }
@@ -22,7 +29,7 @@ namespace SashaGrayBot
         {
             if (!bw.IsBusy)
             {
-                bw.RunWorkerAsync(token);
+                bw.RunWorkerAsync(botToken);
             }
             
         }
@@ -38,13 +45,15 @@ namespace SashaGrayBot
                 {
                     var message = ev.CallbackQuery.Message;
                     if (ev.CallbackQuery.Data == "callback1")
-                    {
-                        using (var host = new WebClient())
-                        {
-                            host.Headers.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36");
-                            
-                            await client.AnswerCallbackQueryAsync(ev.CallbackQuery.Id, result.ToString(), true);
-                        }                                               
+                    {                        
+                            using (var host = new HttpClient())
+                            {
+                                var credentials = Encoding.ASCII.GetBytes("Sasha:91fd1607341d5a5b723519b218023ad3");
+                                host.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(credentials));
+                                host.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36");                          
+                                var result = await host.GetAsync(@"http://192.168.104.144:8080/job/first/build?token=someAuthorizationFuckingTocketThatICantFindWhereToGenerate");
+                                await client.AnswerCallbackQueryAsync(ev.CallbackQuery.Id, "Ok", true);
+                            }
                     }
                     else if (ev.CallbackQuery.Data == "callback2")
                     {
