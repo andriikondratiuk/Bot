@@ -1,10 +1,12 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using Newtonsoft.Json;
+using Newtonsoft.Json.Linq;
+using System;
 using System.ComponentModel;
-using System.Net;
 using System.Net.Http;
 using System.Net.Http.Headers;
 using System.Text;
+using System.Threading;
+using System.Threading.Tasks;
 using Telegram.Bot;
 
 namespace SashaGrayBot
@@ -36,7 +38,7 @@ namespace SashaGrayBot
                 bw.RunWorkerAsync(botToken);
             }
             
-        }
+        }               
         private async void bw_DoWork(object sender, DoWorkEventArgs e)
         {
             var worker = sender as BackgroundWorker;
@@ -54,10 +56,25 @@ namespace SashaGrayBot
                             {
                                 var credentials = Encoding.ASCII.GetBytes($"{jenkinsUserName}:{jenkinsUserToken}");
                                 host.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(credentials));
-                                host.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36");                          
+                                host.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36");
+                                var lastBuild = await ParseJson.ResponseJson(host, $"http://{baseAdress}:{port}/job/first/lastBuild/api/json");
                                 var result = await host.GetAsync($"http://{baseAdress}:{port}/job/first/build?token=someAuthorizationFuckingTocketThatICantFindWhereToGenerate");
-                                await client.AnswerCallbackQueryAsync(ev.CallbackQuery.Id, "Ok", true);
-                            }
+                                JenkisBuildJson resId;
+                                do
+                                {
+                                    Thread.Sleep(1000);
+                                    resId = await ParseJson.ResponseJson(host, $"http://{baseAdress}:{port}/job/first/lastBuild/api/json");
+                                } while (lastBuild.number == resId.number);
+                                if (resId.result != null && resId.result.Equals("SUCCESS"))
+                                {
+                                    await client.SendTextMessageAsync(message.Chat.Id, $"Готово, билд{resId.displayName}");
+                                }
+                                else
+                                {
+                                    await client.SendTextMessageAsync(message.Chat.Id, $"Что то пошло не так:(, билд{resId.displayName}");
+                                }
+
+                        }
                     }
                     else if (ev.CallbackQuery.Data == "callback2")
                     {
@@ -91,6 +108,33 @@ namespace SashaGrayBot
                                                 );
 
                             await client.SendTextMessageAsync(message.Chat.Id, "Будем Обновлять?", false, false, 0, keyboard, Telegram.Bot.Types.Enums.ParseMode.Default);
+                        }
+                        if (message.Text == "Саша обнови")
+                        {
+                            using (var host = new HttpClient())
+                            {
+                                await client.SendTextMessageAsync(message.Chat.Id, $"Хорошо");
+                                var credentials = Encoding.ASCII.GetBytes($"{jenkinsUserName}:{jenkinsUserToken}");
+                                host.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(credentials));
+                                host.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36");
+                                var lastBuild = await ParseJson.ResponseJson(host, $"http://{baseAdress}:{port}/job/first/lastBuild/api/json");
+                                var result = await host.GetAsync($"http://{baseAdress}:{port}/job/first/build?token=someAuthorizationFuckingTocketThatICantFindWhereToGenerate");
+                                JenkisBuildJson resId;
+                                do
+                                {
+                                    Thread.Sleep(1000);
+                                    resId = await ParseJson.ResponseJson(host, $"http://{baseAdress}:{port}/job/first/lastBuild/api/json");
+                                } while (lastBuild.number == resId.number);
+                                if (resId.result != null && resId.result.Equals("SUCCESS"))
+                                {
+                                    await client.SendTextMessageAsync(message.Chat.Id, $"Готово, билд{resId.displayName}");
+                                }
+                                else
+                                {
+                                    await client.SendTextMessageAsync(message.Chat.Id, $"Что то пошло не так:(, билд{resId.displayName}");
+                                }
+
+                            }
                         }
                     }
                 };
