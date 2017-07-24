@@ -23,30 +23,39 @@ namespace SashaGrayBot {
             }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("Sasha")]
         public string UserName {
             get {
                 return ((string)(this["UserName"]));
             }
+            set {
+                this["UserName"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("91fd1607341d5a5b723519b218023ad3")]
         public string PasswordToken {
             get {
                 return ((string)(this["PasswordToken"]));
             }
+            set {
+                this["PasswordToken"] = value;
+            }
         }
         
-        [global::System.Configuration.ApplicationScopedSettingAttribute()]
+        [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("333253994:AAGQ21RKbwNLPWUGXlSamzKAEEpGUOZUldY")]
         public string BotToken {
             get {
                 return ((string)(this["BotToken"]));
+            }
+            set {
+                this["BotToken"] = value;
             }
         }
     }
