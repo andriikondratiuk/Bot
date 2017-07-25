@@ -13,7 +13,7 @@ namespace SashaGrayBot
         /// Подготовка Header
         /// </summary>
         /// <param name="host">Клиент HttpClient</param>
-        public static void PrepareHeader(HttpClient host)
+        public static void PrepareHeaderForJenkins(HttpClient host)
         {
             var credentials = Encoding.ASCII.GetBytes($"{jenkinsUserName}:{jenkinsUserToken}");
             host.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(credentials));

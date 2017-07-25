@@ -11,7 +11,7 @@ namespace SashaGrayBot.Commands
         {
             using (var host = new HttpClient())
             {
-                ClientExtension.PrepareHeader(host);
+                ClientExtension.PrepareHeaderForJenkins(host);
                 var lastBuild = await ParseJson.ResponseJson<JenkisBuildJson>(host, $"http://{baseAdress}:{port}/job/first/lastBuild/api/json");
                 var result = await host.GetAsync($"http://{baseAdress}:{port}/job/first/build?token=someAuthorizationFuckingTocketThatICantFindWhereToGenerate");
                 JenkisBuildJson resId;
