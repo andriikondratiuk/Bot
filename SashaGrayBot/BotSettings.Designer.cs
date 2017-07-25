@@ -74,12 +74,12 @@ namespace SashaGrayBot {
         [global::System.Configuration.UserScopedSettingAttribute()]
         [global::System.Diagnostics.DebuggerNonUserCodeAttribute()]
         [global::System.Configuration.DefaultSettingValueAttribute("8080")]
-        public string Poprt {
+        public string Port {
             get {
-                return ((string)(this["Poprt"]));
+                return ((string)(this["Port"]));
             }
             set {
-                this["Poprt"] = value;
+                this["Port"] = value;
             }
         }
     }

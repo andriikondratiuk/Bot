@@ -61,6 +61,8 @@
       <DesignTimeSharedInput>True</DesignTimeSharedInput>
       <AutoGen>True</AutoGen>
     </Compile>
+    <Compile Include="ClientExtension.cs" />
+    <Compile Include="Commands\UpdateDev.cs" />
     <Compile Include="JenkisBuildJson.cs" />
     <Compile Include="ParseJson.cs" />
     <Compile Include="Program.cs" />

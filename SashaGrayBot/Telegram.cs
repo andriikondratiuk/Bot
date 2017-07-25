@@ -16,17 +16,13 @@ namespace SashaGrayBot
         private readonly string baseAdress;
         private readonly string port;
         private readonly string botToken;
-        private readonly string jenkinsUserName;
-        private readonly string jenkinsUserToken;
         private BackgroundWorker bw;
 
         public TelegramBot()
         {
             baseAdress = BotSettings.Default["Host"].ToString();
             port = BotSettings.Default["Port"].ToString();
-            botToken = BotSettings.Default["BotToken"].ToString();
-            jenkinsUserName = BotSettings.Default["UserName"].ToString();
-            jenkinsUserToken = BotSettings.Default["PasswordToken"].ToString();    
+            botToken = BotSettings.Default["BotToken"].ToString();  
             bw = new BackgroundWorker();
             bw.DoWork += bw_DoWork;
         }
@@ -51,30 +47,8 @@ namespace SashaGrayBot
                 {
                     var message = ev.CallbackQuery.Message;
                     if (ev.CallbackQuery.Data == "callback1")
-                    {                        
-                            using (var host = new HttpClient())
-                            {
-                                var credentials = Encoding.ASCII.GetBytes($"{jenkinsUserName}:{jenkinsUserToken}");
-                                host.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(credentials));
-                                host.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36");
-                                var lastBuild = await ParseJson.ResponseJson(host, $"http://{baseAdress}:{port}/job/first/lastBuild/api/json");
-                                var result = await host.GetAsync($"http://{baseAdress}:{port}/job/first/build?token=someAuthorizationFuckingTocketThatICantFindWhereToGenerate");
-                                JenkisBuildJson resId;
-                                do
-                                {
-                                    Thread.Sleep(1000);
-                                    resId = await ParseJson.ResponseJson(host, $"http://{baseAdress}:{port}/job/first/lastBuild/api/json");
-                                } while (lastBuild.number == resId.number);
-                                if (resId.result != null && resId.result.Equals("SUCCESS"))
-                                {
-                                    await client.SendTextMessageAsync(message.Chat.Id, $"Готово, билд{resId.displayName}");
-                                }
-                                else
-                                {
-                                    await client.SendTextMessageAsync(message.Chat.Id, $"Что то пошло не так:(, билд{resId.displayName}");
-                                }
-
-                        }
+                    {
+                        await Commands.UpdateDev.StartDev(client, message, baseAdress, port);
                     }
                     else if (ev.CallbackQuery.Data == "callback2")
                     {
@@ -111,30 +85,11 @@ namespace SashaGrayBot
                         }
                         if (message.Text == "Саша обнови")
                         {
-                            using (var host = new HttpClient())
-                            {
-                                await client.SendTextMessageAsync(message.Chat.Id, $"Хорошо");
-                                var credentials = Encoding.ASCII.GetBytes($"{jenkinsUserName}:{jenkinsUserToken}");
-                                host.DefaultRequestHeaders.Authorization = new AuthenticationHeaderValue("Basic", Convert.ToBase64String(credentials));
-                                host.DefaultRequestHeaders.Add("user-agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/59.0.3071.115 Safari/537.36");
-                                var lastBuild = await ParseJson.ResponseJson(host, $"http://{baseAdress}:{port}/job/first/lastBuild/api/json");
-                                var result = await host.GetAsync($"http://{baseAdress}:{port}/job/first/build?token=someAuthorizationFuckingTocketThatICantFindWhereToGenerate");
-                                JenkisBuildJson resId;
-                                do
-                                {
-                                    Thread.Sleep(1000);
-                                    resId = await ParseJson.ResponseJson(host, $"http://{baseAdress}:{port}/job/first/lastBuild/api/json");
-                                } while (lastBuild.number == resId.number);
-                                if (resId.result != null && resId.result.Equals("SUCCESS"))
-                                {
-                                    await client.SendTextMessageAsync(message.Chat.Id, $"Готово, билд{resId.displayName}");
-                                }
-                                else
-                                {
-                                    await client.SendTextMessageAsync(message.Chat.Id, $"Что то пошло не так:(, билд{resId.displayName}");
-                                }
-
-                            }
+                            await Commands.UpdateDev.StartDev(client, message, baseAdress, port);
+                        }
+                        if (message.Text == "видос")
+                        {
+                            await client.SendVideoAsync(message.Chat.Id, @"video.mp4");
                         }
                     }
                 };
@@ -145,6 +100,6 @@ namespace SashaGrayBot
                 Console.WriteLine(ex.Message);
             }
 
-        }
+        }       
     }
 }

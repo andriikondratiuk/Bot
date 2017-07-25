@@ -6,6 +6,9 @@ using System.Threading.Tasks;
 
 namespace SashaGrayBot
 {
+    /// <summary>
+    /// lastBuild/api/json
+    /// </summary>
     public class JenkisBuildJson
     {
         public string _class { get; set; }
